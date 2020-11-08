@@ -8,7 +8,7 @@ import java.util.*;
 public class MainClass{
     // Frame, Panel, and Title
     private final JFrame frame;
-    private final JPanel panel;
+    private final JPanel inputPanel;
     private final JLabel title;
 
     // H-value objects
@@ -24,11 +24,12 @@ public class MainClass{
     private final JFileChooser fileChoose;
 
     // Differentiation options
+    private final JLabel optionLabel;
     private final JComboBox option;
 
     // Result objects
     private final JLabel dataField;
-    private final JButton submitButton;
+    private final JButton findAreaButton;
 
     // Screen dimensions
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -39,6 +40,10 @@ public class MainClass{
     private final ArrayList<Double> xValues;
     private final ArrayList<Double> fxValues;
 
+    // Fonts
+    private final Font titleFont = new Font("Serif", Font.BOLD, 32);
+    private final Font labelFont = new Font("Serif", Font.PLAIN, 18);
+
     public MainClass() {
         // Data
         xValues = new ArrayList<>();
@@ -47,14 +52,29 @@ public class MainClass{
         // Frame
         frame = new JFrame();
         title = new JLabel("Numerical Integration Calculator");
+        title.setFont(titleFont);
 
         // H-value
-        hLabel = new JLabel("Enter a value for h", SwingConstants.CENTER);
-        fieldForH = new JTextField();
+        hLabel = new JLabel("Enter a value for h: ", SwingConstants.CENTER);
+        hLabel.setFont(labelFont);
+        fieldForH = new JTextField(12);
 
         // N-value
-        nLabel = new JLabel("Enter a value for n", SwingConstants.CENTER);
-        fieldForN = new JTextField();
+        nLabel = new JLabel("Enter a value for n: ", SwingConstants.CENTER);
+        nLabel.setFont(labelFont);
+        fieldForN = new JTextField(12);
+
+        // Object for selecting integration method
+        optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
+        optionLabel.setFont(labelFont);
+        option = new JComboBox(new String[]{"Trapezoidal Rule", "Simpson's Rule"});
+
+        // Object for importing file result field, and integration method objects
+        fileChoose = new JFileChooser();
+
+        // Object for results
+        dataField = new JLabel("\n");
+        dataField.setFont(labelFont);
 
         // Browse file ActionListener
         browseFileButton = new JButton(new AbstractAction("Browse File") {
@@ -65,22 +85,19 @@ public class MainClass{
 
                 // If dataField has no parent, assign panel as parent
                 if (dataField.getParent() == null)
-                    panel.add(dataField);
+                    inputPanel.add(dataField);
 
                 // Display the name of the chosen text file
-                String fileName = fileChoose.getSelectedFile().getName();
-                dataField.setText(String.format("File: %s", fileName));
+                File file = fileChoose.getSelectedFile();
+                if (file == null)
+                    dataField.setText("\n");
+                else
+                    dataField.setText(String.format("File Selected: %s", file.getName()));
             }
         });
 
-        // File, result field, and integration method objects
-        fileChoose = new JFileChooser();
-        dataField = new JLabel("Text");
-        String [] options = {"Trapezoidal Rule", "Simpson's Rule"};
-        option = new JComboBox(options);
-
         // Submit button ActionListener
-        submitButton = new JButton(new AbstractAction("Find Area") {
+        findAreaButton = new JButton(new AbstractAction("Find Area") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fieldForH.getText().equals(""))
@@ -119,25 +136,72 @@ public class MainClass{
             }
         });
 
-        // Panel settings
-        panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(240, 225, 240, 225));
-        panel.setLayout(new GridLayout(0, 1));
-        panel.add(title);
-        panel.add(hLabel);
-        panel.add(fieldForH);
-        panel.add(nLabel);
-        panel.add(fieldForN);
-        panel.add(option);
-        panel.add(browseFileButton);
-        panel.add(submitButton);
+        // Constraints settings
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(5, 5, 5, 5);
+        constraints.anchor = GridBagConstraints.WEST;
+
+        // Main panel
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        // Title Panel
+        JPanel titlePanel = new JPanel();
+        titlePanel.add(title);
+
+        // Input Panel
+        inputPanel = new JPanel(new GridBagLayout());
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        inputPanel.add(hLabel, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        inputPanel.add(fieldForH, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        inputPanel.add(nLabel, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        inputPanel.add(fieldForN, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        inputPanel.add(optionLabel, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        inputPanel.add(option, constraints);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        buttonPanel.add(browseFileButton, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        buttonPanel.add(findAreaButton, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 2;
+        buttonPanel.add(dataField, constraints);
+
+        // Merge panels
+        mainPanel.add(titlePanel);
+        mainPanel.add(inputPanel);
+        mainPanel.add(buttonPanel);
 
         // Frame settings
-        frame.add(panel, BorderLayout.CENTER);
-        frame.setTitle("Numerical Differentiation");
+        frame.add(mainPanel);
+        frame.setTitle("Numerical Integration Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(width/2, height/2);
+        frame.setPreferredSize(new Dimension(width/3, height/4));
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.pack();
     }
@@ -228,5 +292,4 @@ public class MainClass{
     public static void main(String [] args){
         new MainClass();
     }
-
 }
