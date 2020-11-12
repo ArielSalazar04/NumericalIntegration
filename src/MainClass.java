@@ -5,11 +5,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 public class MainClass{
-    // Frame, Panel, and Title
+    // Frame and Title
     private final JFrame frame;
-    private final JPanel inputPanel;
     private final JLabel title;
+
+    // Panels
+    private final JPanel mainPanel;
+    private final JPanel titlePanel;
+    private final JPanel inputPanel;
+    private final JPanel buttonPanel;
+
+    // Constraints
+    private final GridBagConstraints constraints;
 
     // H-value objects
     private final JLabel hLabel;
@@ -18,6 +30,10 @@ public class MainClass{
     // N-value objects
     private final JLabel nLabel;
     private final JTextField fieldForN;
+
+    // A-value objects
+    private final JLabel aLabel;
+    private final JTextField fieldForA;
 
     // Browse file
     private final JButton browseFileButton;
@@ -40,6 +56,10 @@ public class MainClass{
     private final ArrayList<Double> xValues;
     private final ArrayList<Double> fxValues;
 
+    // Interpolated Values
+    private final ArrayList<Double> xInterpolatedValues;
+    private final ArrayList<Double> fxInterpolatedValues;
+
     // Fonts
     private final Font titleFont = new Font("Serif", Font.BOLD, 32);
     private final Font labelFont = new Font("Serif", Font.PLAIN, 18);
@@ -48,6 +68,8 @@ public class MainClass{
         // Data
         xValues = new ArrayList<>();
         fxValues = new ArrayList<>();
+        xInterpolatedValues = new ArrayList<>();
+        fxInterpolatedValues = new ArrayList<>();
 
         // Frame
         frame = new JFrame();
@@ -64,10 +86,15 @@ public class MainClass{
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
 
+        // A-value
+        aLabel = new JLabel("Enter a value for a: ", SwingConstants.CENTER);
+        aLabel.setFont(labelFont);
+        fieldForA = new JTextField(12);
+
         // Object for selecting integration method
         optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
         optionLabel.setFont(labelFont);
-        option = new JComboBox(new String[]{"Trapezoidal Rule", "Simpson's Rule"});
+        option = new JComboBox<>(new String[]{"Trapezoidal Rule", "Simpson's Rule"});
 
         // Object for importing file result field, and integration method objects
         fileChoose = new JFileChooser();
@@ -109,21 +136,53 @@ public class MainClass{
                 }
                 else {
                     File importedFile = fileChoose.getSelectedFile();
+
+                    // Clear all data for next query
                     xValues.clear();
                     fxValues.clear();
+                    xInterpolatedValues.clear();
+                    fxInterpolatedValues.clear();
 
+                    // Checks if file is selected
                     if (importedFile != null) {
                         try {
+                            // Read data from text file into ArrayLists
                             Scanner fileScanner = new Scanner(importedFile);
                             while (fileScanner.hasNextLine()) {
                                 String[] pair = fileScanner.nextLine().split(",");
                                 xValues.add(Double.parseDouble(pair[0]));
                                 fxValues.add(Double.parseDouble(pair[1]));
                             }
+
+                            // Obtain text from input fields and compute area
                             double n = Double.parseDouble(fieldForN.getText());
                             double h = Double.parseDouble(fieldForH.getText());
-                            double area = numericalIntegration(xValues, fxValues, n, h, String.valueOf(option.getSelectedItem()));
+                            double a = Double.parseDouble(fieldForA.getText());
+                            String method = String.valueOf(option.getSelectedItem());
+                            double area = numericalIntegration(xValues, fxValues, n, h, a, method);
+
+                            // Display the area
                             dataField.setText(String.format("Area under curve: %f", area));
+
+                            // Create dataset
+                            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+                            for (int i = 0; i < fxInterpolatedValues.size(); i++)
+                                dataset.addValue(fxInterpolatedValues.get(i), "f(x)", xInterpolatedValues.get(i));
+
+                            // Create chart panel
+                            JPanel panelForChart = new ChartPanel(ChartFactory.createLineChart(
+                                    "Lagrange Interpolated Polynomial", "x", "f(x)", dataset));
+
+                            // Open new frame with graph
+                            JFrame myFrame = new JFrame();
+                            myFrame.add(panelForChart);
+                            myFrame.setTitle("Function of X");
+                            myFrame.setPreferredSize(new Dimension(width/2, height/2));
+                            myFrame.setLocationRelativeTo(null);
+                            myFrame.setResizable(false);
+                            myFrame.setVisible(true);
+                            myFrame.pack();
+
                         } catch (FileNotFoundException fileNotFoundException) {
                             fileNotFoundException.printStackTrace();
                         }
@@ -137,16 +196,16 @@ public class MainClass{
         });
 
         // Constraints settings
-        GridBagConstraints constraints = new GridBagConstraints();
+        constraints = new GridBagConstraints();
         constraints.insets = new Insets(5, 5, 5, 5);
         constraints.anchor = GridBagConstraints.WEST;
 
         // Main panel
-        JPanel mainPanel = new JPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         // Title Panel
-        JPanel titlePanel = new JPanel();
+        titlePanel = new JPanel();
         titlePanel.add(title);
 
         // Input Panel
@@ -169,14 +228,22 @@ public class MainClass{
 
         constraints.gridx = 0;
         constraints.gridy = 2;
-        inputPanel.add(optionLabel, constraints);
+        inputPanel.add(aLabel, constraints);
 
         constraints.gridx = 1;
         constraints.gridy = 2;
+        inputPanel.add(fieldForA, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        inputPanel.add(optionLabel, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 3;
         inputPanel.add(option, constraints);
 
         // Button Panel
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel = new JPanel(new GridBagLayout());
         constraints.gridx = 0;
         constraints.gridy = 0;
         buttonPanel.add(browseFileButton, constraints);
@@ -206,67 +273,89 @@ public class MainClass{
         frame.pack();
     }
 
-    double numericalIntegration(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h, String option){
+    double numericalIntegration(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h, double a, String option){
         if (option.equals("Trapezoidal Rule"))
-            return trapezoidalRule(xCoords, fxCoords, n, h);
+            return trapezoidalRule(xCoords, fxCoords, n, h, a);
         else
-            return simpsonsRule(xCoords, fxCoords, n, h);
+            return simpsonsRule(xCoords, fxCoords, n, h, a);
     }
-    double trapezoidalRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h){
-        double sum = 0;
+    double trapezoidalRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h, double a){
+        double sum = 0, fxo, fxi, fxn;
 
         // Increment f(xo)
-        if (!xCoords.contains(0.0))
-            sum += lagrangeInterpolation(xCoords, fxCoords, 0.0);
+        if (!xCoords.contains(a))
+            fxo = lagrangeInterpolation(xCoords, fxCoords, a);
         else
-            sum += fxCoords.get(xCoords.indexOf(0.0));
+            fxo = fxCoords.get(xCoords.indexOf(a));
+
+        sum += fxo;
+        xInterpolatedValues.add(a);
+        fxInterpolatedValues.add(fxo);
 
         // Increment 2 * ∑(fxi) for i ∈ [1, N-1]
-        for (double i = h; i < n*h; i=i+h){
+        for (double i = a+h; i < n*h+a; i=i+h){
             if (!xCoords.contains(i))
-                sum += 2 * lagrangeInterpolation(xCoords, fxCoords, i);
+                fxi = 2 * lagrangeInterpolation(xCoords, fxCoords, i);
             else
-                sum += 2 * fxCoords.get(xCoords.indexOf(i));
+                fxi = 2 * fxCoords.get(xCoords.indexOf(i));
+            sum += fxi;
+            xInterpolatedValues.add(i);
+            fxInterpolatedValues.add(fxi);
         }
 
         // Increment f(xn)
-        if (!xCoords.contains(n*h))
-            sum += lagrangeInterpolation(xCoords, fxCoords, n*h);
+        if (!xCoords.contains(n*h+a))
+            fxn = lagrangeInterpolation(xCoords, fxCoords, n*h+a);
         else
-            sum += fxCoords.get(xCoords.indexOf(n*h));
+            fxn = fxCoords.get(xCoords.indexOf(n*h+a));
+
+        sum += fxn;
+        xInterpolatedValues.add(n*h+a);
+        fxInterpolatedValues.add(fxn);
 
         return h * sum / 2;
     }
-    double simpsonsRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h){
-        double sum = 0;
-
+    double simpsonsRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h, double a){
+        double sum = 0, fxo, fxi, fxn;
+        
         // Increment f(a)
-        if (!xCoords.contains(0.0))
-            sum += lagrangeInterpolation(xCoords, fxCoords, 0.0);
+        if (!xCoords.contains(a))
+            fxo = lagrangeInterpolation(xCoords, fxCoords, a);
         else
-            sum += fxCoords.get(xCoords.indexOf(0.0));
+            fxo = fxCoords.get(xCoords.indexOf(a));
+
+        sum += fxo;
+        xInterpolatedValues.add(a);
+        fxInterpolatedValues.add(fxo);
 
         // Increment 2 * ∑(fx2k) for i ∈ [1, (N-2)-1]
         for (double k = 1; k < n; k++){
             if (k % 2 == 0){
-                if (!xCoords.contains(k * h))
-                    sum += 2 * lagrangeInterpolation(xCoords, fxCoords, k * h);
+                if (!xCoords.contains(k*h+a))
+                    fxi = 2 * lagrangeInterpolation(xCoords, fxCoords, k*h+a);
                 else
-                    sum += 2 * fxCoords.get(xCoords.indexOf(k * h));
+                    fxi = 2 * fxCoords.get(xCoords.indexOf(k*h+a));
             }
             else{
-                if (!xCoords.contains(k * h))
-                    sum += 4 * lagrangeInterpolation(xCoords, fxCoords, k * h);
+                if (!xCoords.contains(k*h+a))
+                    fxi = 4 * lagrangeInterpolation(xCoords, fxCoords, k*h+a);
                 else
-                    sum += 4 * fxCoords.get(xCoords.indexOf(k * h));
+                    fxi = 4 * fxCoords.get(xCoords.indexOf(k*h+a));
             }
+            sum += fxi;
+            xInterpolatedValues.add(k*h+a);
+            fxInterpolatedValues.add(fxi);
         }
 
         // Increment f(b)
-        if (!xCoords.contains(n*h))
-            sum += lagrangeInterpolation(xCoords, fxCoords, n*h);
+        if (!xCoords.contains(n*h+a))
+            fxn = lagrangeInterpolation(xCoords, fxCoords, n*h+a);
         else
-            sum += fxCoords.get(xCoords.indexOf(n*h));
+            fxn = fxCoords.get(xCoords.indexOf(n*h+a));
+
+        sum += fxn;
+        xInterpolatedValues.add(n*h+a);
+        fxInterpolatedValues.add(fxn);
 
         return h * sum / 3;
     }
