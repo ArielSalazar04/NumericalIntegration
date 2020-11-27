@@ -96,57 +96,70 @@ public class MainClass{
                 else {
                     File importedFile = fileChoose.getSelectedFile();
 
+
                     // Data
                     ArrayList<Double> xValues = new ArrayList<>();
                     ArrayList<Double> fxValues = new ArrayList<>();
 
                     // Checks if file is selected
                     if (importedFile != null) {
-                        try {
-                            // Read data from text file into ArrayLists
-                            Scanner fileScanner = new Scanner(importedFile);
-                            while (fileScanner.hasNextLine()) {
-                                String[] pair = fileScanner.nextLine().split(",");
-                                xValues.add(Double.parseDouble(pair[0]));
-                                fxValues.add(Double.parseDouble(pair[1]));
-                            }
+                        String fileName = importedFile.getName();
+                        int periodIndex = fileName.lastIndexOf(".");
+                        String ext = fileName.substring(periodIndex+1);
 
-                            // Obtain text from input fields and compute area
-                            double n = Double.parseDouble(fieldForN.getText());
-                            double h = Double.parseDouble(fieldForH.getText());
-                            double a = Double.parseDouble(fieldForA.getText());
-                            boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
+                        if(ext.equals("txt") | ext.equals("csv"))
+                        {
+                            try {
+                                // Read data from text file into ArrayLists
+                                Scanner fileScanner = new Scanner(importedFile);
+                                while (fileScanner.hasNextLine()) {
+                                    String[] pair = fileScanner.nextLine().split(",");
+                                    xValues.add(Double.parseDouble(pair[0]));
+                                    fxValues.add(Double.parseDouble(pair[1]));
+                                }
 
-                            // Lagrange Interpolation Object
-                            LagrangeInterpolation obj = new LagrangeInterpolation(xValues, fxValues);
-                            double area = obj.numericalIntegration(xValues, fxValues, n, h, isTrap);
-                            ArrayList<Double> xInterpolatedValues = obj.getxGraphValues();
-                            ArrayList<Double> fxInterpolatedValues = obj.getfxGraphValues();
 
-                            // Display the area
-                            dataField.setText(String.format("Area under curve: %f", area));
+                                // Obtain text from input fields and compute area
+                                double n = Double.parseDouble(fieldForN.getText());
+                                double h = Double.parseDouble(fieldForH.getText());
+                                double a = Double.parseDouble(fieldForA.getText());
+                                boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
 
-                            // Create dataset
-                            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-                            for (int i = 0; i < fxInterpolatedValues.size(); i++)
-                                dataset.addValue(fxInterpolatedValues.get(i), "f(x)", xInterpolatedValues.get(i));
+                                // Lagrange Interpolation Object
+                                LagrangeInterpolation obj = new LagrangeInterpolation(xValues, fxValues);
+                                double area = obj.numericalIntegration(xValues, fxValues, n, h, isTrap);
+                                ArrayList<Double> xInterpolatedValues = obj.getxGraphValues();
+                                ArrayList<Double> fxInterpolatedValues = obj.getfxGraphValues();
 
-                            // Create chart panel
-                            JPanel panelForChart = new ChartPanel(ChartFactory.createLineChart(
-                                    "Lagrange Interpolated Polynomial", "x", "f(x)", dataset));
+                                // Display the area
+                                dataField.setText(String.format("Area under curve: %f", area));
 
-                            // Open new frame with graph
-                            JFrame myFrame = new JFrame();
-                            myFrame.add(panelForChart);
-                            myFrame.setTitle("Function of X");
+                                // Create dataset
+                                DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+                                for (int i = 0; i < fxInterpolatedValues.size(); i++)
+                                    dataset.addValue(fxInterpolatedValues.get(i), "f(x)", xInterpolatedValues.get(i));
+
+                                // Create chart panel
+                                JPanel panelForChart = new ChartPanel(ChartFactory.createLineChart(
+                                        "Lagrange Interpolated Polynomial", "x", "f(x)", dataset));
+
+                                // Open new frame with graph
+                                JFrame myFrame = new JFrame();
+                                myFrame.add(panelForChart);
+                                myFrame.setTitle("Function of X");
 //                            myFrame.setPreferredSize(new Dimension(width / 2, height / 2));
-                            myFrame.setLocationRelativeTo(null);
+                                myFrame.setLocationRelativeTo(null);
 //                            myFrame.setResizable(false);
-                            myFrame.setVisible(true);
-                            myFrame.pack();
-                        } catch (FileNotFoundException fileNotFoundException) {
-                            fileNotFoundException.printStackTrace();
+                                myFrame.setVisible(true);
+                                myFrame.pack();
+
+                            } catch (FileNotFoundException fileNotFoundException) {
+                                fileNotFoundException.printStackTrace();
+                            }
                         }
+                        else
+                            JOptionPane.showMessageDialog(frame, "File must have .txt or .csv extension");
+
 
                     }
                     else
