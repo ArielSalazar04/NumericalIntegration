@@ -15,7 +15,6 @@ public class MainClass{
     private final JPanel inputPanel;
     private final JTextField fieldForH;
     private final JTextField fieldForN;
-    private final JTextField fieldForA;
     private final JFileChooser fileChoose;
     private final JComboBox option;
     private final JLabel dataField;
@@ -45,10 +44,6 @@ public class MainClass{
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
 
-        // A-value objects
-        JLabel aLabel = new JLabel("Enter a value for a: ", SwingConstants.CENTER);
-        aLabel.setFont(labelFont);
-        fieldForA = new JTextField(12);
 
         // Object for selecting integration method
         JLabel optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
@@ -144,7 +139,6 @@ public class MainClass{
                                     // Obtain text from input fields and compute area
                                     double n = Double.parseDouble(fieldForN.getText());
                                     double h = Double.parseDouble(fieldForH.getText());
-                                    double a = Double.parseDouble(fieldForA.getText());
                                     boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
 
                                     // Lagrange Interpolation Object
@@ -223,13 +217,6 @@ public class MainClass{
         constraints.gridy = 1;
         inputPanel.add(fieldForN, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        inputPanel.add(aLabel, constraints);
-
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        inputPanel.add(fieldForA, constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 3;
