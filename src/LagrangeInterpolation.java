@@ -12,13 +12,13 @@ public class LagrangeInterpolation {
         this.xGraphValues = new ArrayList<>();
         this.fxGraphValues = new ArrayList<>();
     }
-    public double numericalIntegration(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h, boolean trapRule){
+    public double numericalIntegration(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h, boolean trapRule){
         if (trapRule)
             return trapezoidalRule(xCoords, fxCoords, n, h);
         else
             return simpsonsRule(xCoords, fxCoords, n, h);
     }
-    private double trapezoidalRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h){
+    private double trapezoidalRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h){
         double sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxo, fxk, fxn, xk;
 
         // Increment f(xo)
@@ -55,7 +55,7 @@ public class LagrangeInterpolation {
 
         return h * sum / 2;
     }
-    private double simpsonsRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, double n, double h){
+    private double simpsonsRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h){
         double sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxo, fxk, fxn, xk;
         int scalar;
 

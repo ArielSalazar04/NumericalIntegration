@@ -15,7 +15,6 @@ public class MainClass{
     private final JPanel inputPanel;
     private final JTextField fieldForH;
     private final JTextField fieldForN;
-    private final JTextField fieldForA;
     private final JFileChooser fileChoose;
     private final JComboBox option;
     private final JLabel dataField;
@@ -45,10 +44,6 @@ public class MainClass{
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
 
-        // A-value objects
-        JLabel aLabel = new JLabel("Enter a value for a: ", SwingConstants.CENTER);
-        aLabel.setFont(labelFont);
-        fieldForA = new JTextField(12);
 
         // Object for selecting integration method
         JLabel optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
@@ -90,11 +85,9 @@ public class MainClass{
                     JOptionPane.showMessageDialog(frame, "Missing value for H");
                 else if (fieldForN.getText().equals(""))
                     JOptionPane.showMessageDialog(frame, "Missing value for N");
-                else if (Integer.parseInt(fieldForN.getText()) % 2 == 1 && String.valueOf(option.getSelectedItem()).equals("Simpson's Rule")) {
-                    JOptionPane.showMessageDialog(frame, "N must be even when applying Simpson's Rule.");
-                }
                 else {
                     File importedFile = fileChoose.getSelectedFile();
+
 
                     // Data
                     ArrayList<Double> xValues = new ArrayList<>();
@@ -102,51 +95,116 @@ public class MainClass{
 
                     // Checks if file is selected
                     if (importedFile != null) {
-                        try {
-                            // Read data from text file into ArrayLists
-                            Scanner fileScanner = new Scanner(importedFile);
-                            while (fileScanner.hasNextLine()) {
-                                String[] pair = fileScanner.nextLine().split(",");
-                                xValues.add(Double.parseDouble(pair[0]));
-                                fxValues.add(Double.parseDouble(pair[1]));
+                        String fileName = importedFile.getName();
+                        int periodIndex = fileName.lastIndexOf(".");
+                        String ext = fileName.substring(periodIndex+1);
+
+                        if(ext.equals("txt") || ext.equals("csv"))
+                        {
+                            try {
+                                // Read data from text file into ArrayLists
+                                Scanner fileScanner = new Scanner(importedFile);
+                                boolean flag = true;
+
+                                while (fileScanner.hasNextLine())
+                                {
+
+                                    String line = fileScanner.nextLine();
+                                    if(!containsOneComma(line))
+                                    {
+                                        flag = false;
+                                        JOptionPane.showMessageDialog(frame, "Invalid formatting, each row must contain one comma");
+
+                                        break;
+                                    }
+
+
+
+                                    String[] pair = line.split(",");
+                                    try {
+                                        xValues.add(Double.parseDouble(pair[0]));
+                                        fxValues.add(Double.parseDouble(pair[1]));
+
+                                    }
+
+
+                                    catch(NumberFormatException n)
+                                    {
+                                        flag = false;
+                                        JOptionPane.showMessageDialog(frame, "Invalid formatting, one line contains a non-parsible number");
+                                        break;
+                                    }
+                                }
+                                int n = 0;
+                                double h = 0;
+
+                                try{
+
+                                    // Obtain text from input fields and compute area
+                                     n = Integer.parseInt(fieldForN.getText());
+                                     h = Double.parseDouble(fieldForH.getText());
+                                    if(n<=0 || h<=0 ){
+                                        throw new NumberFormatException();
+                                    }
+                                }
+                                catch(NumberFormatException NumberFormatException)
+                                {
+                                    flag = false;
+                                    JOptionPane.showMessageDialog(frame, "Invalid formatting, " +
+                                            "N must be an integer, H must be a decimal," +
+                                            " both must be positive");
+
+                                }
+                                if(n % 2 == 1 && String.valueOf(option.getSelectedItem()).equals("Simpson's Rule")){
+                                    flag = false;
+                                    JOptionPane.showMessageDialog(frame, "N must be even when applying Simpson's Rule.");
+                                }
+
+
+
+                                if(flag)
+                                {
+
+
+                                    boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
+
+                                    // Lagrange Interpolation Object
+                                    LagrangeInterpolation obj = new LagrangeInterpolation(xValues, fxValues);
+                                    double area = obj.numericalIntegration(xValues, fxValues, n, h, isTrap);
+                                    ArrayList<Double> xInterpolatedValues = obj.getxGraphValues();
+                                    ArrayList<Double> fxInterpolatedValues = obj.getfxGraphValues();
+
+                                    // Display the area
+                                    dataField.setText(String.format("Area under curve: %f", area));
+
+                                    // Create dataset
+                                    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+                                    for (int i = 0; i < fxInterpolatedValues.size(); i++)
+                                        dataset.addValue(fxInterpolatedValues.get(i), "f(x)", xInterpolatedValues.get(i));
+
+                                    // Create chart panel
+                                    JPanel panelForChart = new ChartPanel(ChartFactory.createLineChart(
+                                            "Lagrange Interpolated Polynomial", "x", "f(x)", dataset));
+
+                                    // Open new frame with graph
+                                    JFrame myFrame = new JFrame();
+                                    myFrame.add(panelForChart);
+                                    myFrame.setTitle("Function of X");
+    //                            myFrame.setPreferredSize(new Dimension(width / 2, height / 2));
+                                    myFrame.setLocationRelativeTo(null);
+    //                            myFrame.setResizable(false);
+                                    myFrame.setVisible(true);
+                                    myFrame.pack();
+                                }
+
+                            } catch (FileNotFoundException fileNotFoundException) {
+                                fileNotFoundException.printStackTrace();
                             }
-
-                            // Obtain text from input fields and compute area
-                            double n = Double.parseDouble(fieldForN.getText());
-                            double h = Double.parseDouble(fieldForH.getText());
-                            double a = Double.parseDouble(fieldForA.getText());
-                            boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
-
-                            // Lagrange Interpolation Object
-                            LagrangeInterpolation obj = new LagrangeInterpolation(xValues, fxValues);
-                            double area = obj.numericalIntegration(xValues, fxValues, n, h, isTrap);
-                            ArrayList<Double> xInterpolatedValues = obj.getxGraphValues();
-                            ArrayList<Double> fxInterpolatedValues = obj.getfxGraphValues();
-
-                            // Display the area
-                            dataField.setText(String.format("Area under curve: %f", area));
-
-                            // Create dataset
-                            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-                            for (int i = 0; i < fxInterpolatedValues.size(); i++)
-                                dataset.addValue(fxInterpolatedValues.get(i), "f(x)", xInterpolatedValues.get(i));
-
-                            // Create chart panel
-                            JPanel panelForChart = new ChartPanel(ChartFactory.createLineChart(
-                                    "Lagrange Interpolated Polynomial", "x", "f(x)", dataset));
-
-                            // Open new frame with graph
-                            JFrame myFrame = new JFrame();
-                            myFrame.add(panelForChart);
-                            myFrame.setTitle("Function of X");
-//                            myFrame.setPreferredSize(new Dimension(width / 2, height / 2));
-                            myFrame.setLocationRelativeTo(null);
-//                            myFrame.setResizable(false);
-                            myFrame.setVisible(true);
-                            myFrame.pack();
-                        } catch (FileNotFoundException fileNotFoundException) {
-                            fileNotFoundException.printStackTrace();
                         }
+                        else
+                            JOptionPane.showMessageDialog(frame, "File must have .txt or .csv extension");
+
+
 
                     }
                     else
@@ -186,13 +244,6 @@ public class MainClass{
         constraints.gridy = 1;
         inputPanel.add(fieldForN, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        inputPanel.add(aLabel, constraints);
-
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        inputPanel.add(fieldForA, constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 3;
@@ -233,7 +284,21 @@ public class MainClass{
         frame.pack();
     }
 
+
+
     public static void main(String [] args){
         new MainClass();
     }
+
+    public boolean containsOneComma(String line){
+        int count  = 0;
+        for(int i = 0; i < line.length(); i++)
+        {
+            count = (line.charAt(i)==',') ? count+1:count;
+        }
+        return count == 1;
+
+    }
+
 }
+
