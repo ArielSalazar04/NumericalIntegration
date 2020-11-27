@@ -85,9 +85,6 @@ public class MainClass{
                     JOptionPane.showMessageDialog(frame, "Missing value for H");
                 else if (fieldForN.getText().equals(""))
                     JOptionPane.showMessageDialog(frame, "Missing value for N");
-                else if (Integer.parseInt(fieldForN.getText()) % 2 == 1 && String.valueOf(option.getSelectedItem()).equals("Simpson's Rule")) {
-                    JOptionPane.showMessageDialog(frame, "N must be even when applying Simpson's Rule.");
-                }
                 else {
                     File importedFile = fileChoose.getSelectedFile();
 
@@ -102,14 +99,15 @@ public class MainClass{
                         int periodIndex = fileName.lastIndexOf(".");
                         String ext = fileName.substring(periodIndex+1);
 
-                        if(ext.equals("txt") | ext.equals("csv"))
+                        if(ext.equals("txt") || ext.equals("csv"))
                         {
                             try {
                                 // Read data from text file into ArrayLists
                                 Scanner fileScanner = new Scanner(importedFile);
                                 boolean flag = true;
 
-                                while (fileScanner.hasNextLine()) {
+                                while (fileScanner.hasNextLine())
+                                {
 
                                     String line = fileScanner.nextLine();
                                     if(!containsOneComma(line))
@@ -120,12 +118,16 @@ public class MainClass{
                                         break;
                                     }
 
+
+
                                     String[] pair = line.split(",");
                                     try {
                                         xValues.add(Double.parseDouble(pair[0]));
                                         fxValues.add(Double.parseDouble(pair[1]));
 
                                     }
+
+
                                     catch(NumberFormatException n)
                                     {
                                         flag = false;
@@ -133,12 +135,37 @@ public class MainClass{
                                         break;
                                     }
                                 }
+                                int n = 0;
+                                double h = 0;
+
+                                try{
+
+                                    // Obtain text from input fields and compute area
+                                     n = Integer.parseInt(fieldForN.getText());
+                                     h = Double.parseDouble(fieldForH.getText());
+                                    if(n<=0 || h<=0 ){
+                                        throw new NumberFormatException();
+                                    }
+                                }
+                                catch(NumberFormatException NumberFormatException)
+                                {
+                                    flag = false;
+                                    JOptionPane.showMessageDialog(frame, "Invalid formatting, " +
+                                            "N must be an integer, H must be a decimal," +
+                                            " both must be positive");
+
+                                }
+                                if(n % 2 == 1 && String.valueOf(option.getSelectedItem()).equals("Simpson's Rule")){
+                                    flag = false;
+                                    JOptionPane.showMessageDialog(frame, "N must be even when applying Simpson's Rule.");
+                                }
+
+
+
                                 if(flag)
                                 {
 
-                                    // Obtain text from input fields and compute area
-                                    double n = Double.parseDouble(fieldForN.getText());
-                                    double h = Double.parseDouble(fieldForH.getText());
+
                                     boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
 
                                     // Lagrange Interpolation Object
