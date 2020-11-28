@@ -44,7 +44,6 @@ public class MainClass{
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
 
-
         // Object for selecting integration method
         JLabel optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
         optionLabel.setFont(labelFont);
@@ -88,7 +87,6 @@ public class MainClass{
                 else {
                     File importedFile = fileChoose.getSelectedFile();
 
-
                     // Data
                     ArrayList<Double> xValues = new ArrayList<>();
                     ArrayList<Double> fxValues = new ArrayList<>();
@@ -108,7 +106,6 @@ public class MainClass{
 
                                 while (fileScanner.hasNextLine())
                                 {
-
                                     String line = fileScanner.nextLine();
                                     if(!containsOneComma(line))
                                     {
@@ -118,17 +115,12 @@ public class MainClass{
                                         break;
                                     }
 
-
-
                                     String[] pair = line.split(",");
                                     try {
                                         xValues.add(Double.parseDouble(pair[0]));
                                         fxValues.add(Double.parseDouble(pair[1]));
 
-                                    }
-
-
-                                    catch(NumberFormatException n)
+                                    } catch(NumberFormatException n)
                                     {
                                         flag = false;
                                         JOptionPane.showMessageDialog(frame, "Invalid formatting, one line contains a non-parsible number");
@@ -139,33 +131,27 @@ public class MainClass{
                                 double h = 0;
 
                                 try{
-
                                     // Obtain text from input fields and compute area
-                                     n = Integer.parseInt(fieldForN.getText());
-                                     h = Double.parseDouble(fieldForH.getText());
+                                    n = Integer.parseInt(fieldForN.getText());
+                                    h = Double.parseDouble(fieldForH.getText());
                                     if(n<=0 || h<=0 ){
                                         throw new NumberFormatException();
                                     }
-                                }
-                                catch(NumberFormatException NumberFormatException)
+                                } catch(NumberFormatException NumberFormatException)
                                 {
                                     flag = false;
                                     JOptionPane.showMessageDialog(frame, "Invalid formatting, " +
                                             "N must be an integer, H must be a decimal," +
                                             " both must be positive");
-
                                 }
+
                                 if(n % 2 == 1 && String.valueOf(option.getSelectedItem()).equals("Simpson's Rule")){
                                     flag = false;
                                     JOptionPane.showMessageDialog(frame, "N must be even when applying Simpson's Rule.");
                                 }
 
-
-
                                 if(flag)
                                 {
-
-
                                     boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
 
                                     // Lagrange Interpolation Object
@@ -189,12 +175,12 @@ public class MainClass{
                                     // Open new frame with graph
                                     JFrame myFrame = new JFrame();
                                     myFrame.add(panelForChart);
+//                                    myFrame.pack();
                                     myFrame.setTitle("Function of X");
-    //                            myFrame.setPreferredSize(new Dimension(width / 2, height / 2));
+                                    myFrame.setSize(width / 2, height / 2);
                                     myFrame.setLocationRelativeTo(null);
-    //                            myFrame.setResizable(false);
+//                                    myFrame.setResizable(false);
                                     myFrame.setVisible(true);
-                                    myFrame.pack();
                                 }
 
                             } catch (FileNotFoundException fileNotFoundException) {
@@ -203,9 +189,6 @@ public class MainClass{
                         }
                         else
                             JOptionPane.showMessageDialog(frame, "File must have .txt or .csv extension");
-
-
-
                     }
                     else
                         JOptionPane.showMessageDialog(frame, "Missing file");
@@ -276,12 +259,13 @@ public class MainClass{
         // Frame settings
         frame.add(mainPanel);
         frame.setTitle("Numerical Integration Calculator");
+        frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setPreferredSize(new Dimension(width/3, height/4));
+//        frame.setSize(new Dimension(width/2, height/2));
         frame.setLocationRelativeTo(null);
 //        frame.setResizable(false);
         frame.setVisible(true);
-        frame.pack();
+
     }
 
 

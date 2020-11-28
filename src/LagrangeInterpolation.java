@@ -5,6 +5,7 @@ public class LagrangeInterpolation {
     private final ArrayList<Double> fxValues;
     private final ArrayList<Double> xGraphValues;
     private final ArrayList<Double> fxGraphValues;
+    private int modulusDividend;
 
     LagrangeInterpolation(ArrayList<Double> xValues, ArrayList<Double> fxValues){
         this.xValues = xValues;
@@ -13,6 +14,7 @@ public class LagrangeInterpolation {
         this.fxGraphValues = new ArrayList<>();
     }
     public double numericalIntegration(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h, boolean trapRule){
+        modulusDividend = (n > 16) ? (int)Math.round(n / 16.0) : 1;
         if (trapRule)
             return trapezoidalRule(xCoords, fxCoords, n, h);
         else
@@ -28,8 +30,8 @@ public class LagrangeInterpolation {
             fxo = getFunctionValue(xCoords, fxCoords, a);
 
         sum += fxo;
-        xGraphValues.add(a);
-        fxGraphValues.add(fxo);
+        xGraphValues.add(Math.round(a * 100)/100.0);
+        fxGraphValues.add(Math.round(fxo * 100)/100.0);
 
         // Increment 2 * ∑(fxi) for i ∈ [1, N-1]
         for (double k = 1; k < n; k++){
@@ -38,9 +40,12 @@ public class LagrangeInterpolation {
                 fxk = 2 * fxCoords.get(xCoords.indexOf(xk));
             else
                 fxk = 2 * getFunctionValue(xCoords, fxCoords, xk);
-            sum += fxk;
-            xGraphValues.add(xk);
-            fxGraphValues.add(fxk);
+
+            if (k % modulusDividend == 0){
+                sum += fxk;
+                xGraphValues.add(Math.round(xk * 100)/100.0);
+                fxGraphValues.add(Math.round(fxk * 100)/100.0);
+            }
         }
 
         // Increment f(xn)
@@ -50,8 +55,8 @@ public class LagrangeInterpolation {
             fxn = getFunctionValue(xCoords, fxCoords, b);
 
         sum += fxn;
-        xGraphValues.add(b);
-        fxGraphValues.add(fxn);
+        xGraphValues.add(Math.round(b * 100)/100.0);
+        fxGraphValues.add(Math.round(fxn * 100)/100.0);
 
         return h * sum / 2;
     }
@@ -66,8 +71,8 @@ public class LagrangeInterpolation {
             fxo = getFunctionValue(xCoords, fxCoords, a);
 
         sum += fxo;
-        xGraphValues.add(a);
-        fxGraphValues.add(fxo);
+        xGraphValues.add(Math.round(a * 100)/100.0);
+        fxGraphValues.add(Math.round(fxo * 100)/100.0);
 
         // Increment 2 * ∑(fx2k) for i ∈ [1, (N-2)-1]
         for (double k = 1; k < n; k++){
@@ -80,8 +85,8 @@ public class LagrangeInterpolation {
                 fxk = scalar * getFunctionValue(xCoords, fxCoords, xk);
 
             sum += fxk;
-            xGraphValues.add(xk);
-            fxGraphValues.add(fxk);
+            xGraphValues.add(Math.round(xk * 100)/100.0);
+            fxGraphValues.add(Math.round(fxk * 100)/100.0);
         }
 
         // Increment f(b)
@@ -91,8 +96,8 @@ public class LagrangeInterpolation {
             fxn = getFunctionValue(xCoords, fxCoords, b);
 
         sum += fxn;
-        xGraphValues.add(b);
-        fxGraphValues.add(fxn);
+        xGraphValues.add(Math.round(b * 100)/100.0);
+        fxGraphValues.add(Math.round(fxn * 100)/100.0);
 
         return h * sum / 3;
     }
