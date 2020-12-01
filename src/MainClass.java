@@ -107,7 +107,7 @@ public class MainClass{
                                 while (fileScanner.hasNextLine())
                                 {
                                     String line = fileScanner.nextLine();
-                                    if(!containsOneComma(line))
+                                    if(!containsOneLetter(line,','))
                                     {
                                         flag = false;
                                         JOptionPane.showMessageDialog(frame, "Invalid formatting, each row must contain one comma");
@@ -132,16 +132,43 @@ public class MainClass{
 
                                 try{
                                     // Obtain text from input fields and compute area
-                                    n = Integer.parseInt(fieldForN.getText());
-                                    h = Double.parseDouble(fieldForH.getText());
+                                     n = Integer.parseInt(fieldForN.getText());
+                                     String valueOfH=fieldForH.getText();
+                                     if(valueOfH.contains("pi")||valueOfH.contains("Pi")||valueOfH.contains("PI"))
+                                     {
+                                         valueOfH=valueOfH.replace("pi",String.valueOf(Math.PI));
+                                         valueOfH=valueOfH.replace("Pi",String.valueOf(Math.PI));
+                                         valueOfH=valueOfH.replace("PI",String.valueOf(Math.PI));
+                                     }
+
+                                     if(valueOfH.contains("/")&&containsOneLetter(valueOfH,'/'))
+                                     {
+                                         String num[] = valueOfH.split("/");
+                                         try
+                                         {
+                                             double left = Double.parseDouble(num[0]);
+                                             double right = Double.parseDouble(num[1]);
+                                             if(right == 0 )
+                                             {
+                                                 throw new ArithmeticException();
+                                             }
+                                              h = left/right;
+                                         }
+                                         catch(Exception exp) { }
+                                     }
+                                     else
+                                     {
+                                         h = Double.parseDouble(valueOfH);
+                                     }
                                     if(n<=0 || h<=0 ){
                                         throw new NumberFormatException();
                                     }
-                                } catch(NumberFormatException NumberFormatException)
+                                }
+                                catch(NumberFormatException exp)
                                 {
                                     flag = false;
                                     JOptionPane.showMessageDialog(frame, "Invalid formatting, " +
-                                            "N must be an integer, H must be a decimal," +
+                                            "N must be an integer, H must be a decimal or a valid fraction," +
                                             " both must be positive");
                                 }
 
@@ -195,6 +222,7 @@ public class MainClass{
                 }
             }
         });
+
 
         // Constraints settings
         GridBagConstraints constraints = new GridBagConstraints();
@@ -274,11 +302,11 @@ public class MainClass{
         new MainClass();
     }
 
-    public boolean containsOneComma(String line){
+    public boolean containsOneLetter(String line,char letter){
         int count  = 0;
         for(int i = 0; i < line.length(); i++)
         {
-            count = (line.charAt(i)==',') ? count+1:count;
+            count = (line.charAt(i)== letter) ? count+1:count;
         }
         return count == 1;
 
