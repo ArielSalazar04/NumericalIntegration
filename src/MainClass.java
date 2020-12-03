@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.*;
 
 import org.jfree.chart.ChartFactory;
@@ -13,10 +15,13 @@ public class MainClass{
     // Java Swing Objects
     private final JFrame frame;
     private final JPanel inputPanel;
+    private final JComboBox dataImportOption;
     private final JTextField fieldForH;
     private final JTextField fieldForN;
+    private final JTextField fieldForArea;
     private final JFileChooser fileChoose;
     private final JComboBox option;
+    private final JTable table;
     private final JLabel dataField;
 
     // Screen dimensions
@@ -34,6 +39,11 @@ public class MainClass{
         JLabel title = new JLabel("Numerical Integration Calculator");
         title.setFont(titleFont);
 
+        //Data importing selector object
+        JLabel dataImportLabel = new JLabel("Import: ",SwingConstants.CENTER);
+        dataImportLabel.setFont(labelFont);
+        dataImportOption = new JComboBox<>(new String[]{"Import Data","Import File"});
+
         // H-value objects
         JLabel hLabel = new JLabel("Enter a value for h: ", SwingConstants.CENTER);
         hLabel.setFont(labelFont);
@@ -43,6 +53,9 @@ public class MainClass{
         JLabel nLabel = new JLabel("Enter a value for n: ", SwingConstants.CENTER);
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
+
+        //Output Area
+        fieldForArea = new JTextField(12);
 
         // Object for selecting integration method
         JLabel optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
@@ -75,6 +88,7 @@ public class MainClass{
                     dataField.setText(String.format("File Selected: %s", file.getName()));
             }
         });
+        browseFileButton.setEnabled(false);
 
         // Submit button ActionListener
         JButton findAreaButton = new JButton(new AbstractAction("Find Area") {
@@ -223,38 +237,74 @@ public class MainClass{
             }
         });
 
+        dataImportOption.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String option = (String)dataImportOption.getSelectedItem();
+                assert option != null;
+                if (option.substring(7).equals("File")){
+                    table.setEnabled(false);
+                    browseFileButton.setEnabled(true);
+                    table.setGridColor(Color.WHITE);
+                    table.clearSelection();
+                }
+                else{
+                    table.setEnabled(true);
+                    browseFileButton.setEnabled(false);
+                    table.setGridColor(Color.BLACK);
+                }
+            }
+        });
+
+        inputPanel = new JPanel();
 
         // Constraints settings
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(5, 5, 5, 5);
-        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(4, 4, 4, 4);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        // Main panel
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        //Master panel
+        JPanel masterPanel = new JPanel(new GridBagLayout());
 
-        // Title Panel
-        JPanel titlePanel = new JPanel();
-        titlePanel.add(title);
+        //Image Label
+        JLabel imageLabel = makeImageLabel("/Images/projectImage.jpeg");
 
-        // Input Panel
-        inputPanel = new JPanel(new GridBagLayout());
+        //Main Panel
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+
+        //Input and Data Panel
+        JPanel inputAndData = new JPanel(new GridLayout(1,2));
+
+        //Input Panel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+
+        //Data Panel
+        JPanel dataPanel = new JPanel(new GridBagLayout());
+
+        //Input Panel Design
         constraints.gridx = 0;
         constraints.gridy = 0;
+        inputPanel.add(dataImportLabel, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        inputPanel.add(dataImportOption, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
         inputPanel.add(hLabel, constraints);
 
         constraints.gridx = 1;
-        constraints.gridy = 0;
+        constraints.gridy = 1;
         inputPanel.add(fieldForH, constraints);
 
         constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridy = 2;
         inputPanel.add(nLabel, constraints);
 
         constraints.gridx = 1;
-        constraints.gridy = 1;
+        constraints.gridy = 2;
         inputPanel.add(fieldForN, constraints);
-
 
         constraints.gridx = 0;
         constraints.gridy = 3;
@@ -264,34 +314,53 @@ public class MainClass{
         constraints.gridy = 3;
         inputPanel.add(option, constraints);
 
-        // Button Panel
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
         constraints.gridx = 0;
-        constraints.gridy = 0;
-        buttonPanel.add(browseFileButton, constraints);
+        constraints.gridy = 4;
+        inputPanel.add(findAreaButton, constraints);
 
         constraints.gridx = 1;
+        constraints.gridy = 4;
+        inputPanel.add(fieldForArea, constraints);
+
+        //Data Panel Design
+        table = new JTable(5,2);
+        table.setGridColor(Color.BLACK);
+        table.setRowHeight(20);
+        constraints.gridx = 0;
         constraints.gridy = 0;
-        buttonPanel.add(findAreaButton, constraints);
+        dataPanel.add(table,constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
-        constraints.gridwidth = 2;
-        buttonPanel.add(dataField, constraints);
+        dataPanel.add(browseFileButton, constraints);
 
-        // Merge panels
-        mainPanel.add(titlePanel);
-        mainPanel.add(inputPanel);
-        mainPanel.add(buttonPanel);
+        //Input and Data Panel Design
+        inputAndData.add(inputPanel);
+        inputAndData.add(dataPanel);
+
+        //Main Panel Design
+        constraints.fill = GridBagConstraints.CENTER;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        mainPanel.add(title, constraints);
+
+        constraints.ipady = 100;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        mainPanel.add(inputAndData, constraints);
+
+        //Master Panel Design
+        masterPanel.add(imageLabel);
+        masterPanel.add(mainPanel);
 
         // Frame settings
-        frame.add(mainPanel);
+        frame.add(masterPanel);
         frame.setTitle("Numerical Integration Calculator");
-        frame.pack();
+        frame.setSize(new Dimension(840,390));
+        frame.setBackground(Color.BLUE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(new Dimension(width/2, height/2));
         frame.setLocationRelativeTo(null);
-//        frame.setResizable(false);
+        frame.setResizable(false);
         frame.setVisible(true);
 
     }
@@ -310,6 +379,13 @@ public class MainClass{
         }
         return count == 1;
 
+    }
+    private JLabel makeImageLabel(String path){
+        JLabel imageLabel = new JLabel();
+        URL image = getClass().getResource(path);
+        ImageIcon imageIcon = new ImageIcon(image);
+        imageLabel.setIcon(imageIcon);
+        return imageLabel;
     }
 
 }
