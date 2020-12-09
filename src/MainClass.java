@@ -331,7 +331,12 @@ public class MainClass{
     private double getH() throws InvalidNOrHException {
         String valueOfH = fieldForH.getText();
         try {
-            return parseFractionalValue(valueOfH);
+            double h =  parseFractionalValue(valueOfH);
+            if(h<=0)
+            {
+                throw new InvalidNOrHException();
+            }
+            return h;
         } catch (Exception exception){
             throw new InvalidNOrHException();
         }
