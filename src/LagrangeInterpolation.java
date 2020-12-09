@@ -24,10 +24,7 @@ public class LagrangeInterpolation {
         double sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxo, fxk, fxn, xk;
 
         // Increment f(xo)
-        if (xCoords.contains(a))
-            fxo = fxCoords.get(xCoords.indexOf(a));
-        else
-            fxo = getFunctionValue(xCoords, fxCoords, a);
+        fxo = fxCoords.get(xCoords.indexOf(a));
 
         sum += fxo;
         xGraphValues.add(Math.round(a * 100)/100.0);
@@ -41,18 +38,16 @@ public class LagrangeInterpolation {
             else
                 fxk = 2 * getFunctionValue(xCoords, fxCoords, xk);
 
+            sum += fxk;
+
             if (k % modulusDividend == 0){
-                sum += fxk;
                 xGraphValues.add(Math.round(xk * 100)/100.0);
-                fxGraphValues.add(Math.round(fxk * 100)/100.0);
+                fxGraphValues.add(Math.round(fxk * 100)/200.0);
             }
         }
 
         // Increment f(xn)
-        if (xCoords.contains(b))
-            fxn = fxCoords.get(xCoords.indexOf(b));
-        else
-            fxn = getFunctionValue(xCoords, fxCoords, b);
+        fxn = fxCoords.get(xCoords.indexOf(b));
 
         sum += fxn;
         xGraphValues.add(Math.round(b * 100)/100.0);
@@ -65,10 +60,7 @@ public class LagrangeInterpolation {
         int scalar;
 
         // Increment f(a)
-        if (xCoords.contains(a))
-            fxo = fxCoords.get(xCoords.indexOf(a));
-        else
-            fxo = getFunctionValue(xCoords, fxCoords, a);
+        fxo = fxCoords.get(xCoords.indexOf(a));
 
         sum += fxo;
         xGraphValues.add(Math.round(a * 100)/100.0);
@@ -85,15 +77,15 @@ public class LagrangeInterpolation {
                 fxk = scalar * getFunctionValue(xCoords, fxCoords, xk);
 
             sum += fxk;
-            xGraphValues.add(Math.round(xk * 100)/100.0);
-            fxGraphValues.add(Math.round(fxk * 100)/100.0);
+            
+            if (k % modulusDividend == 0){
+                xGraphValues.add(Math.round(xk * 100)/100.0);
+                fxGraphValues.add(Math.round(fxk * 100)/200.0);
+            }
         }
 
         // Increment f(b)
-        if (xCoords.contains(b))
-            fxn = fxCoords.get(xCoords.indexOf(b));
-        else
-            fxn = getFunctionValue(xCoords, fxCoords, b);
+        fxn = fxCoords.get(xCoords.indexOf(b));
 
         sum += fxn;
         xGraphValues.add(Math.round(b * 100)/100.0);
