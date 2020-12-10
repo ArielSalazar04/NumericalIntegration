@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,7 @@ public class MainClass{
     private final JFileChooser fileChoose;
     private final JComboBox option;
     private final JTable table;
+    private final DefaultTableModel tableModel;
     private final JLabel dataField;
 
     // Screen dimensions
@@ -191,6 +193,28 @@ public class MainClass{
             }
         });
 
+        JButton addRow = new JButton(new AbstractAction("+") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (tableModel.getRowCount() <50)
+                    tableModel.addRow(new String[]{"", ""});
+                else
+                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
+            }
+        });
+
+        JButton deleteRow = new JButton(new AbstractAction("-") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (tableModel.getRowCount() > 3)
+                    tableModel.removeRow(tableModel.getRowCount()-1);
+                else
+                    JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
+            }
+        });
+
+
         inputPanel = new JPanel();
 
         // Constraints settings
@@ -262,13 +286,36 @@ public class MainClass{
         inputPanel.add(showGraph, constraints);
 
         //Data Panel Design
-        table = new JTable(6,2);
+        tableModel = new DefaultTableModel(6, 2){
+            @Override
+            public String getColumnName(int index) {
+                return (index == 0) ? "x" : "fx";
+            }
+        };
+        table = new JTable(tableModel);
         table.setGridColor(Color.BLACK);
         table.setRowHeight(20);
+
+        JScrollPane pane = new JScrollPane(table) {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(175, 140);
+            }
+        };
+
         constraints.gridx = 0;
         constraints.gridy = 0;
-        dataPanel.add(table,constraints);
+        dataPanel.add(pane, constraints);
 
+        // Stepper
+        JPanel stepper = new JPanel(new GridLayout(2, 1));
+        stepper.add(addRow);
+        stepper.add(deleteRow);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        dataPanel.add(stepper, constraints);
+
+       //Browse button and data field
         constraints.gridx = 0;
         constraints.gridy = 1;
         dataPanel.add(browseFileButton, constraints);
@@ -299,7 +346,7 @@ public class MainClass{
         // Frame settings
         frame.add(masterPanel);
         frame.setTitle("Numerical Integration Calculator");
-        frame.setSize(new Dimension(840,390));
+        frame.setSize(new Dimension(900,400));
         frame.setBackground(Color.BLUE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -396,11 +443,6 @@ public class MainClass{
         for (int i = 0; i < table.getRowCount(); i++){
             num1 = (String) table.getValueAt(i, 0);
             num2 = (String) table.getValueAt(i, 1);
-            if(num1 == null || num2 == null)
-            {
-                continue;
-            }
-
             try {
                 xValues.add(parseFractionalValue(num1));
                 fxValues.add(parseFractionalValue(num2));
