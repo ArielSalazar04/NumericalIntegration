@@ -21,12 +21,12 @@ public class LagrangeInterpolation {
             return simpsonsRule(xCoords, fxCoords, n, h);
     }
     private double trapezoidalRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h){
-        double sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxo, fxk, fxn, xk;
+        double area = 0, sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxk, xk;
 
         // Increment f(xo)
-        fxo = fxCoords.get(xCoords.indexOf(a));
+        double fxo = fxCoords.get(0);
 
-        sum += fxo;
+        area += fxo;
         xGraphValues.add(Math.round(a * 100)/100.0);
         fxGraphValues.add(Math.round(fxo * 100)/100.0);
 
@@ -34,35 +34,37 @@ public class LagrangeInterpolation {
         for (double k = 1; k < n; k++){
             xk = a + k*h;
             if (xCoords.contains(xk))
-                fxk = 2 * fxCoords.get(xCoords.indexOf(xk));
+                fxk = fxCoords.get(xCoords.indexOf(xk));
             else
-                fxk = 2 * getFunctionValue(xCoords, fxCoords, xk);
+                fxk = getFunctionValue(xCoords, fxCoords, xk);
 
             sum += fxk;
 
             if (k % modulusDividend == 0){
                 xGraphValues.add(Math.round(xk * 100)/100.0);
-                fxGraphValues.add(Math.round(fxk * 100)/200.0);
+                fxGraphValues.add(Math.round(fxk * 100)/100.0);
             }
         }
 
-        // Increment f(xn)
-        fxn = fxCoords.get(xCoords.indexOf(b));
+        area += 2 * sum;
 
-        sum += fxn;
+        // Increment f(xn)
+        double fxn = fxCoords.get(fxCoords.size()-1);
+
+        area += fxn;
         xGraphValues.add(Math.round(b * 100)/100.0);
         fxGraphValues.add(Math.round(fxn * 100)/100.0);
 
-        return h * sum / 2;
+        return h * area / 2;
     }
     private double simpsonsRule(ArrayList<Double> xCoords, ArrayList<Double> fxCoords, int n, double h){
-        double sum = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxo, fxk, fxn, xk;
+        double area = 0, a = xCoords.get(0), b = xCoords.get(xCoords.size()-1), fxk, xk;
         int scalar;
 
         // Increment f(a)
-        fxo = fxCoords.get(xCoords.indexOf(a));
+        double fxo = fxCoords.get(0);
 
-        sum += fxo;
+        area += fxo;
         xGraphValues.add(Math.round(a * 100)/100.0);
         fxGraphValues.add(Math.round(fxo * 100)/100.0);
 
@@ -72,26 +74,26 @@ public class LagrangeInterpolation {
             scalar = (k % 2 == 0) ? 2 : 4;
 
             if (xCoords.contains(xk))
-                fxk = scalar * fxCoords.get(xCoords.indexOf(xk));
+                fxk = fxCoords.get(xCoords.indexOf(xk));
             else
-                fxk = scalar * getFunctionValue(xCoords, fxCoords, xk);
+                fxk = getFunctionValue(xCoords, fxCoords, xk);
 
-            sum += fxk;
+            area += scalar * fxk;
             
             if (k % modulusDividend == 0){
                 xGraphValues.add(Math.round(xk * 100)/100.0);
-                fxGraphValues.add(Math.round(fxk * 100)/200.0);
+                fxGraphValues.add(Math.round(fxk * 100)/100.0);
             }
         }
 
         // Increment f(b)
-        fxn = fxCoords.get(xCoords.indexOf(b));
+        double fxn = fxCoords.get(fxCoords.size()-1);
 
-        sum += fxn;
+        area += fxn;
         xGraphValues.add(Math.round(b * 100)/100.0);
         fxGraphValues.add(Math.round(fxn * 100)/100.0);
 
-        return h * sum / 3;
+        return h * area / 3;
     }
 
     // Function will return the fx value of the x value entered. Quadratic interpolation is performed when necessary,
