@@ -52,12 +52,12 @@ public class MainClass{
         dataImportOption = new JComboBox<>(new String[]{"Import Data","Import File"});
 
         // H-value objects
-        JLabel hLabel = new JLabel("Enter a value for h: ", SwingConstants.CENTER);
+        JLabel hLabel = new JLabel("Enter h: ", SwingConstants.CENTER);
         hLabel.setFont(labelFont);
         fieldForH = new JTextField(12);
 
         // N-value objects
-        JLabel nLabel = new JLabel("Enter a value for n: ", SwingConstants.CENTER);
+        JLabel nLabel = new JLabel("Enter n: ", SwingConstants.CENTER);
         nLabel.setFont(labelFont);
         fieldForN = new JTextField(12);
 
@@ -65,7 +65,7 @@ public class MainClass{
         fieldForArea = new JTextField(12);
 
         // Object for selecting integration method
-        JLabel optionLabel = new JLabel("Integration option: ", SwingConstants.CENTER);
+        JLabel optionLabel = new JLabel("Option: ", SwingConstants.CENTER);
         optionLabel.setFont(labelFont);
         option = new JComboBox<>(new String[]{"Trapezoidal Rule", "Simpson's Rule"});
 
