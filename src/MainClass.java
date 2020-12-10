@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -427,10 +429,17 @@ public class MainClass{
     }
     private double parseFractionalValue(String value){
         double h;
-        if (value.contains("pi") || value.contains("Pi") || value.contains("PI")) {
-            value = value.replace("pi", String.valueOf(Math.PI));
-            value = value.replace("Pi", String.valueOf(Math.PI));
-            value = value.replace("PI", String.valueOf(Math.PI));
+        if (value.contains("pi")) {
+            Pattern pattern = Pattern.compile(".+(?=pi)");
+            Matcher matcher = pattern.matcher(value);
+
+            if (matcher.find()){
+                double multiple = Double.parseDouble(matcher.group(0));
+                value = value.replaceAll(".+pi", String.valueOf(multiple * Math.PI));
+            }
+            else{
+                value = value.replaceAll("pi", String.valueOf(Math.PI));
+            }
         }
         if (value.contains("/") && containsOneLetter(value, '/')) {
             String[] num = value.split("/");
