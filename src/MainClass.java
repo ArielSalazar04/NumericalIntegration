@@ -172,8 +172,6 @@ public class MainClass{
             }
         });
 
-
-
         JButton addRow = new JButton(new AbstractAction("+") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -187,11 +185,19 @@ public class MainClass{
         JButton deleteRow = new JButton(new AbstractAction("-") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (tableModel.getRowCount() > 3)
                     tableModel.removeRow(tableModel.getRowCount()-1);
                 else
                     JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
+            }
+        });
+
+        JButton clearData = new JButton(new AbstractAction("Clear table") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rowCount = tableModel.getRowCount();
+                tableModel.setRowCount(0);
+                tableModel.setRowCount(rowCount);
             }
         });
 
@@ -210,7 +216,7 @@ public class MainClass{
                     browseFileButton.setEnabled(true);
                     addRow.setEnabled(false);
                     deleteRow.setEnabled(false);
-
+                    clearData.setEnabled(false);
                 }
                 else{
                     table.setEnabled(true);
@@ -218,7 +224,7 @@ public class MainClass{
                     browseFileButton.setEnabled(false);
                     addRow.setEnabled(true);
                     deleteRow.setEnabled(true);
-
+                    clearData.setEnabled(true);
                 }
             }
         });
@@ -316,9 +322,10 @@ public class MainClass{
         dataPanel.add(pane, constraints);
 
         // Stepper
-        JPanel stepper = new JPanel(new GridLayout(2, 1));
+        JPanel stepper = new JPanel(new GridLayout(3, 1));
         stepper.add(addRow);
         stepper.add(deleteRow);
+        stepper.add(clearData);
         constraints.gridx = 1;
         constraints.gridy = 0;
         dataPanel.add(stepper, constraints);
