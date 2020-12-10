@@ -172,26 +172,7 @@ public class MainClass{
             }
         });
 
-        dataImportOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String option = (String)dataImportOption.getSelectedItem();
-                assert option != null;
-                if (option.equals("Import File")){
-                    table.setGridColor(Color.WHITE);
-                    table.clearSelection();
-                    table.setEnabled(false);
-                    browseFileButton.setEnabled(true);
 
-                }
-                else{
-                    table.setEnabled(true);
-                    table.setGridColor(Color.BLACK);
-                    browseFileButton.setEnabled(false);
-
-                }
-            }
-        });
 
         JButton addRow = new JButton(new AbstractAction("+") {
             @Override
@@ -214,6 +195,33 @@ public class MainClass{
             }
         });
 
+        dataImportOption.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String option = (String)dataImportOption.getSelectedItem();
+                assert option != null;
+                if (option.equals("Import File")){
+                    table.setGridColor(Color.WHITE);
+                    int rowCount = table.getRowCount();
+                    tableModel.setRowCount(0);
+                    tableModel.setRowCount(rowCount);
+                    table.clearSelection();
+                    table.setEnabled(false);
+                    browseFileButton.setEnabled(true);
+                    addRow.setEnabled(false);
+                    deleteRow.setEnabled(false);
+
+                }
+                else{
+                    table.setEnabled(true);
+                    table.setGridColor(Color.BLACK);
+                    browseFileButton.setEnabled(false);
+                    addRow.setEnabled(true);
+                    deleteRow.setEnabled(true);
+
+                }
+            }
+        });
 
         inputPanel = new JPanel();
 
