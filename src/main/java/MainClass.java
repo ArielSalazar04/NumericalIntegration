@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
+//import java.net.URL;
 import java.util.*;
 
 import org.jfree.chart.ChartFactory;
@@ -240,7 +240,9 @@ public class MainClass{
         JPanel masterPanel = new JPanel(new GridBagLayout());
 
         //Image Label
-        JLabel imageLabel = makeImageLabel("/Images/projectImage.jpeg");
+//        JLabel imageLabel = makeImageLabel("/Images/projectImage.jpeg");
+//        JLabel imageLabel = new JLabel(new ImageIcon(getClass().getResource("/Images/projectImage.jpeg")));
+
 
         //Main Panel
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -355,7 +357,7 @@ public class MainClass{
         mainPanel.add(inputAndData, constraints);
 
         //Master Panel Design
-        masterPanel.add(imageLabel);
+//        masterPanel.add(imageLabel);
         masterPanel.add(mainPanel);
 
         // Frame settings
@@ -383,13 +385,13 @@ public class MainClass{
         return count == 1;
 
     }
-    private JLabel makeImageLabel(String path){
-        JLabel imageLabel = new JLabel();
-        URL image = getClass().getResource(path);
-        ImageIcon imageIcon = new ImageIcon(image);
-        imageLabel.setIcon(imageIcon);
-        return imageLabel;
-    }
+//    private JLabel makeImageLabel(String path){
+//        JLabel imageLabel = new JLabel();
+//        URL image = getClass().getResource(path);
+//        ImageIcon imageIcon = new ImageIcon(image);
+//        imageLabel.setIcon(imageIcon);
+//        return imageLabel;
+//    }
     private double getH() throws InvalidNOrHException {
         String valueOfH = fieldForH.getText();
         try {
