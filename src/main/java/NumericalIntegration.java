@@ -139,12 +139,13 @@ public class NumericalIntegration {
 
     // Lagrange Interpolation Algorithm
     private double lagrangeInterpolation(ArrayList<Double> xCoords, ArrayList<Double> yCoords, double x){
+        int n = xCoords.size();
         double interpolatedValue = 0, lagrangian, xi, xj;
 
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < n; i++){
             lagrangian = 1;
             xi = xCoords.get(i);
-            for (int j = 0; j < size; j++){
+            for (int j = 0; j < n; j++){
                 if (i != j){
                     xj = xCoords.get(j);
                     lagrangian *= (x - xj)/(xi - xj);
