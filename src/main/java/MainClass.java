@@ -1,13 +1,37 @@
-import javax.swing.*;
+// Java Swing objects
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.JFileChooser;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JButton;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+
+// Constraints, font, color, dimensions
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Dimension;
+
+// Others
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-//import java.net.URL;
-import java.util.*;
+import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Scanner;
 
+// Graphing objects
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -16,25 +40,15 @@ public class MainClass{
     // Java Swing Objects
     private final JFrame frame;
     private final JPanel inputPanel;
-    private final JComboBox dataImportOption;
+    private final JComboBox<String> dataImportOption;
     private final JTextField fieldForH;
     private final JTextField fieldForN;
     private final JTextField fieldForArea;
     private final JFileChooser fileChoose;
-    private final JComboBox option;
+    private final JComboBox<String> option;
     private final JTable table;
     private final DefaultTableModel tableModel;
     private final JLabel dataField;
-
-    // Screen dimensions
-    private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private final static int height = screenSize.height;
-    private final static int width = screenSize.width;
-
-    // Fonts
-    private final Font titleFont = new Font("Serif", Font.BOLD, 32);
-    private final Font labelFont = new Font("Serif", Font.PLAIN, 18);
-
 
     // Data
     private final ArrayList<Double> xValues = new ArrayList<>();
@@ -43,13 +57,17 @@ public class MainClass{
     private ArrayList<Double> fxInterpolatedValues;
 
     public MainClass() {
+        // Fonts
+        Font titleFont = new Font("Serif", Font.BOLD, 32);
+        Font labelFont = new Font("Serif", Font.PLAIN, 18);
+
         // Frame
         frame = new JFrame();
         JLabel title = new JLabel("Numerical Integration Calculator");
         title.setFont(titleFont);
 
         //Data importing selector object
-        JLabel dataImportLabel = new JLabel("Import: ",SwingConstants.CENTER);
+        JLabel dataImportLabel = new JLabel("Import: ", SwingConstants.CENTER);
         dataImportLabel.setFont(labelFont);
         dataImportOption = new JComboBox<>(new String[]{"Import Data","Import File"});
 
@@ -75,7 +93,7 @@ public class MainClass{
         fileChoose = new JFileChooser();
 
         // Object for results
-        dataField = new JLabel("\n");
+        dataField = new JLabel("", SwingConstants.CENTER);
         dataField.setFont(labelFont);
 
         // Show graph
@@ -95,7 +113,7 @@ public class MainClass{
                 JFrame myFrame = new JFrame();
                 myFrame.add(panelForChart);
                 myFrame.setTitle("Function of X");
-                myFrame.setSize(width / 2, height / 2);
+                myFrame.setSize(1012, 675);
                 myFrame.setLocationRelativeTo(null);
                 myFrame.setVisible(true);
             }
@@ -152,11 +170,11 @@ public class MainClass{
                 if (validEntries) {
                     boolean isTrap = String.valueOf(option.getSelectedItem()).charAt(0) == 'T';
 
-                    // Lagrange Interpolation Object
-                    LagrangeInterpolation obj = new LagrangeInterpolation(xValues, fxValues);
+                    // Numerical Integration Object
+                    NumericalIntegration obj = new NumericalIntegration(xValues, fxValues);
 
                     try {
-                        area = obj.numericalIntegration(xValues, fxValues, n, h, isTrap);
+                        area = obj.numericalIntegration(n, h, isTrap);
                         xInterpolatedValues = obj.getxGraphValues();
                         fxInterpolatedValues = obj.getfxGraphValues();
 
@@ -233,16 +251,17 @@ public class MainClass{
 
         // Constraints settings
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(4, 4, 4, 4);
+        constraints.insets = new Insets(5, 5, 5, 5);
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
         //Master panel
         JPanel masterPanel = new JPanel(new GridBagLayout());
 
         //Image Label
-//        JLabel imageLabel = makeImageLabel("/Images/projectImage.jpeg");
-//        JLabel imageLabel = new JLabel(new ImageIcon(getClass().getResource("/Images/projectImage.jpeg")));
-
+        JLabel imageLabel = new JLabel();
+//        URL image = getClass().getResource("/Images/projectImage.jpeg");
+//        ImageIcon imageIcon = new ImageIcon(image);
+//        imageLabel.setIcon(imageIcon);
 
         //Main Panel
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -305,17 +324,17 @@ public class MainClass{
         tableModel = new DefaultTableModel(6, 2){
             @Override
             public String getColumnName(int index) {
-                return (index == 0) ? "x" : "fx";
+                return (index == 0) ? "x" : "f(x)";
             }
         };
         table = new JTable(tableModel);
         table.setGridColor(Color.BLACK);
-        table.setRowHeight(20);
+        table.setRowHeight(25);
 
         JScrollPane pane = new JScrollPane(table) {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(175, 140);
+                return new Dimension(200, 170);
             }
         };
 
@@ -332,7 +351,7 @@ public class MainClass{
         constraints.gridy = 0;
         dataPanel.add(stepper, constraints);
 
-       //Browse button and data field
+        //Browse button and data field
         constraints.gridx = 0;
         constraints.gridy = 1;
         dataPanel.add(browseFileButton, constraints);
@@ -357,13 +376,13 @@ public class MainClass{
         mainPanel.add(inputAndData, constraints);
 
         //Master Panel Design
-//        masterPanel.add(imageLabel);
+        masterPanel.add(imageLabel);
         masterPanel.add(mainPanel);
 
         // Frame settings
         frame.add(masterPanel);
         frame.setTitle("Numerical Integration Calculator");
-        frame.setSize(new Dimension(900,400));
+        frame.setSize(new Dimension(1012,450));
         frame.setBackground(Color.BLUE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -376,30 +395,21 @@ public class MainClass{
         new MainClass();
     }
 
-    public boolean containsOneLetter(String line,char letter){
+    public boolean containsOneLetter(String line, char letter){
         int count  = 0;
-        for(int i = 0; i < line.length(); i++)
-        {
+        for(int i = 0; i < line.length(); i++){
             count = (line.charAt(i)== letter) ? count+1:count;
+            if (count >= 2)
+                break;
         }
         return count == 1;
-
     }
-//    private JLabel makeImageLabel(String path){
-//        JLabel imageLabel = new JLabel();
-//        URL image = getClass().getResource(path);
-//        ImageIcon imageIcon = new ImageIcon(image);
-//        imageLabel.setIcon(imageIcon);
-//        return imageLabel;
-//    }
     private double getH() throws InvalidNOrHException {
         String valueOfH = fieldForH.getText();
         try {
-            double h =  parseFractionalValue(valueOfH);
-            if(h<=0)
-            {
+            double h = parseFractionalValue(valueOfH);
+            if(h <= 0)
                 throw new InvalidNOrHException();
-            }
             return h;
         } catch (Exception exception){
             throw new InvalidNOrHException();
@@ -498,4 +508,5 @@ public class MainClass{
     }
 
 }
+
 
