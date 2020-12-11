@@ -30,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // Graphing objects
 import org.jfree.chart.ChartFactory;
@@ -439,10 +441,17 @@ public class MainClass{
     }
     private double parseFractionalValue(String value){
         double h;
-        if (value.contains("pi") || value.contains("Pi") || value.contains("PI")) {
-            value = value.replace("pi", String.valueOf(Math.PI));
-            value = value.replace("Pi", String.valueOf(Math.PI));
-            value = value.replace("PI", String.valueOf(Math.PI));
+        if (value.contains("pi")) {
+            Pattern pattern = Pattern.compile(".+(?=pi)");
+            Matcher matcher = pattern.matcher(value);
+
+            if (matcher.find()){
+                double multiple = Double.parseDouble(matcher.group(0));
+                value = value.replaceAll(".+pi", String.valueOf(multiple * Math.PI));
+            }
+            else{
+                value = value.replaceAll("pi", String.valueOf(Math.PI));
+            }
         }
         if (value.contains("/") && containsOneLetter(value, '/')) {
             String[] num = value.split("/");
