@@ -1,3 +1,5 @@
+package main.java;
+
 // Java Swing objects
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -192,23 +194,37 @@ public class MainClass{
             }
         });
 
-        JButton addRow = new JButton(new AbstractAction("+") {
+        JButton addRow = new JButton(new AbstractAction("Add Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (tableModel.getRowCount() <50)
-                    tableModel.addRow(new String[]{"", ""});
-                else
+                if (table.getSelectedRow() == -1)
+                    JOptionPane.showMessageDialog(frame, "Please select a row.");
+                else if (tableModel.getRowCount() == 50)
                     JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
+                else
+                    tableModel.insertRow(table.getSelectedRow()+1, new String[]{"", ""});
             }
         });
 
-        JButton deleteRow = new JButton(new AbstractAction("-") {
+        JButton deleteRow = new JButton(new AbstractAction("Delete Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (tableModel.getRowCount() > 3)
-                    tableModel.removeRow(tableModel.getRowCount()-1);
-                else
+                if (table.getSelectedRow() == -1)
+                    JOptionPane.showMessageDialog(frame, "Please select a row.");
+                else if (tableModel.getRowCount() == 3)
                     JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
+                else
+                    tableModel.removeRow(table.getSelectedRow());
+            }
+        });
+
+        JButton pushDown = new JButton(new AbstractAction("Push Down") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (tableModel.getRowCount() >= 50)
+                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
+                else
+                    tableModel.insertRow(0, new String[]{"", ""});
             }
         });
 
@@ -345,9 +361,10 @@ public class MainClass{
         dataPanel.add(pane, constraints);
 
         // Stepper
-        JPanel stepper = new JPanel(new GridLayout(3, 1));
+        JPanel stepper = new JPanel(new GridLayout(4, 1));
         stepper.add(addRow);
         stepper.add(deleteRow);
+        stepper.add(pushDown);
         stepper.add(clearData);
         constraints.gridx = 1;
         constraints.gridy = 0;
