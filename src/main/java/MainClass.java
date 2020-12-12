@@ -1,5 +1,3 @@
-package main.java;
-
 // Java Swing objects
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -459,7 +457,7 @@ public class MainClass{
     private double parseFractionalValue(String value){
         double h;
         if (value.contains("pi")) {
-            Pattern pattern = Pattern.compile(".+(?=pi)");
+            Pattern pattern = Pattern.compile("[0-9.]+(?=pi)");
             Matcher matcher = pattern.matcher(value);
 
             if (matcher.find()){
