@@ -195,24 +195,24 @@ public class MainClass{
         JButton addRow = new JButton(new AbstractAction("Add Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRow() == -1)
-                    JOptionPane.showMessageDialog(frame, "Please select a row.");
-                else if (tableModel.getRowCount() == 50)
-                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
+                if (tableModel.getRowCount() < 50){
+                    int index = (table.getSelectedRow() == -1) ? table.getRowCount() : table.getSelectedRow()+1;
+                    tableModel.insertRow(index, new String[]{"", ""});
+                }
                 else
-                    tableModel.insertRow(table.getSelectedRow()+1, new String[]{"", ""});
+                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
             }
         });
 
         JButton deleteRow = new JButton(new AbstractAction("Delete Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRow() == -1)
-                    JOptionPane.showMessageDialog(frame, "Please select a row.");
-                else if (tableModel.getRowCount() == 3)
-                    JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
+                if (tableModel.getRowCount() > 3){
+                    int index = (table.getSelectedRow() == -1) ? table.getRowCount()-1 : table.getSelectedRow();
+                    tableModel.removeRow(index);
+                }
                 else
-                    tableModel.removeRow(table.getSelectedRow());
+                    JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
             }
         });
 
