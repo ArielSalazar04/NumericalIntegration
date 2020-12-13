@@ -1,30 +1,19 @@
 // Java Swing objects
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JFileChooser;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JButton;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 
 // Constraints, font, color, dimensions
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Insets;
-import java.awt.Dimension;
 
 // Others
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Objects;
@@ -60,12 +49,12 @@ public class MainClass{
 
     public MainClass() {
         // Fonts
-        Font titleFont = new Font("Serif", Font.BOLD, 32);
-        Font labelFont = new Font("Serif", Font.PLAIN, 18);
+        Font titleFont = new Font("Serif", Font.BOLD, 36);
+        Font labelFont = new Font("Serif", Font.PLAIN, 20);
 
         // Frame
         frame = new JFrame();
-        JLabel title = new JLabel("Numerical Integration Calculator");
+        JLabel title = new JLabel("Numerical Integration");
         title.setFont(titleFont);
 
         //Data importing selector object
@@ -195,24 +184,24 @@ public class MainClass{
         JButton addRow = new JButton(new AbstractAction("Add Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRow() == -1)
-                    JOptionPane.showMessageDialog(frame, "Please select a row.");
-                else if (tableModel.getRowCount() == 50)
-                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
+                if (tableModel.getRowCount() < 50){
+                    int index = (table.getSelectedRow() == -1) ? table.getRowCount() : table.getSelectedRow()+1;
+                    tableModel.insertRow(index, new String[]{"", ""});
+                }
                 else
-                    tableModel.insertRow(table.getSelectedRow()+1, new String[]{"", ""});
+                    JOptionPane.showMessageDialog(frame, "You have exceeded the maximum rows (50 rows).");
             }
         });
 
         JButton deleteRow = new JButton(new AbstractAction("Delete Row") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRow() == -1)
-                    JOptionPane.showMessageDialog(frame, "Please select a row.");
-                else if (tableModel.getRowCount() == 3)
-                    JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
+                if (tableModel.getRowCount() > 3){
+                    int index = (table.getSelectedRow() == -1) ? table.getRowCount()-1 : table.getSelectedRow();
+                    tableModel.removeRow(index);
+                }
                 else
-                    tableModel.removeRow(table.getSelectedRow());
+                    JOptionPane.showMessageDialog(frame, "You must have at least 3 data points.");
             }
         });
 
@@ -274,10 +263,7 @@ public class MainClass{
         JPanel masterPanel = new JPanel(new GridBagLayout());
 
         //Image Label
-        JLabel imageLabel = new JLabel();
-//        URL image = getClass().getResource("/Images/projectImage.jpeg");
-//        ImageIcon imageIcon = new ImageIcon(image);
-//        imageLabel.setIcon(imageIcon);
+        JLabel imageLabel = new JLabel(new ImageIcon("src/main/java/Images/projectImage.png"));
 
         //Main Panel
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -378,7 +364,9 @@ public class MainClass{
         dataPanel.add(dataField, constraints);
 
         //Input and Data Panel Design
-        inputAndData.add(inputPanel);
+        constraints.insets = new Insets(1, 1, 1, 1);
+        inputAndData.add(inputPanel, constraints);
+        constraints.insets = new Insets(5, 5, 5, 5);
         inputAndData.add(dataPanel);
 
         //Main Panel Design
@@ -399,7 +387,7 @@ public class MainClass{
         // Frame settings
         frame.add(masterPanel);
         frame.setTitle("Numerical Integration Calculator");
-        frame.setSize(new Dimension(1012,450));
+        frame.setSize(new Dimension(1200,525));
         frame.setBackground(Color.BLUE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
