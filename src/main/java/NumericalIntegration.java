@@ -15,7 +15,7 @@ public class NumericalIntegration {
         this.fxGraphValues = new ArrayList<>();
         size = xValues.size();
     }
-    public double numericalIntegration(int n, double h, boolean trapRule){
+    public double integrate(int n, double h, boolean trapRule){
         modulusDividend = (n > 16) ? (int)Math.round(n / 16.0) : 1;
         if (trapRule)
             return trapezoidalRule(n, h);
