@@ -3,7 +3,7 @@
 ## Table of Contents
 [1. Introduction](#introduction)
 
-[2. Theorems](#theorems)<br/>
+[2. Theorem](#theorem)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[a. Trapezoidal Rule](#1-trapezoidal-rule)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[b. Simpson's Rule](#2-simpsons-rule)
 
