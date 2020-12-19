@@ -24,6 +24,8 @@ Trapezoidal Rule and Simpson’s Rule.
 
 This open-source project is a software system created in Java that uses the Java Swing graphical user interface. 
 
+[Back to Top](#numerical-integration-calculator)
+
 ## Theory
 
 In numerical computation, two of the most popular methods for approximating the definite integral on the interval [a, b] are the Trapezoidal Rule and Simpson's Rule, both of which use the following parameters: 
@@ -36,12 +38,16 @@ In numerical computation, two of the most popular methods for approximating the 
   <li>n = the number of sub-intervals</li>
 </ul>
 
+[Back to Top](#numerical-integration-calculator)
+
 ##### (1) Trapezoidal Rule
 
 The Trapezoidal Rule consists of approximating the area under a curve using a trapezoid. Although using one trapezoid will yield a large error (especially for non-linear data), the Trapezoidal Rule can be applied multiple times to obtain a more accurate result. In fact, using more trapezoids and reducing the width of each one will produce a better approximation. When increasing the number of sub-intervals, n, each sub-interval width, h, will become smaller. 
 
 <img src="https://user-images.githubusercontent.com/54899441/102685601-ee6af000-41af-11eb-9237-004921d45376.png" width="512">
 <img src="https://user-images.githubusercontent.com/54899441/102685594-e743e200-41af-11eb-9e51-9a05875f3486.png" width="512">
+
+[Back to Top](#numerical-integration-calculator)
 
 ##### (2) Simpson's Rule
 
@@ -50,6 +56,8 @@ Simpson's Rule consists of approximating the area under a curve by integrating a
 <img src="https://user-images.githubusercontent.com/54899441/102685599-ea3ed280-41af-11eb-9a9c-5589c331a6b0.png" width="512">
 <img src="https://user-images.githubusercontent.com/54899441/102685586-e0b56a80-41af-11eb-911e-ac0208a46185.png" width="512">
 
+[Back to Top](#numerical-integration-calculator)
+
 ## Software System
 
 ##### Graphical User Interface Design
@@ -57,6 +65,8 @@ Simpson's Rule consists of approximating the area under a curve by integrating a
 Below is an image of the GUI design of the software system. The logo on the left side is one that we 3-D modeled using Maple 2020. To the right of the logo is the Input Panel, where the user will enter h and n values and select methods for integrating and importing data. The objects on the right pertain to the Data Panel; in the Data Panel, the user can import data into the table or upload a file with a .csv or .txt extension.
 
 <img src="https://user-images.githubusercontent.com/54899441/102685584-de531080-41af-11eb-981a-37e5550de129.png"></img>
+
+[Back to Top](#numerical-integration-calculator)
 
 ##### Input Panel
 
@@ -71,6 +81,8 @@ Below is an image of the GUI design of the software system. The logo on the left
 
 <img src="https://user-images.githubusercontent.com/54899441/102686123-83231d00-41b3-11eb-99af-f28092324fa3.png" width="625"></img>
 
+[Back to Top](#numerical-integration-calculator)
+
 ##### Data Panel
 
 <ol>
@@ -82,3 +94,5 @@ Below is an image of the GUI design of the software system. The logo on the left
 </ol>
 
 <img src="https://user-images.githubusercontent.com/54899441/102686122-828a8680-41b3-11eb-9922-03a5bf587029.png" width="640"></img>
+
+[Back to Top](#numerical-integration-calculator)
