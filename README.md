@@ -12,7 +12,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[b. Input Panel](#input-panel)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[c. Data Panel](#data-panel)
 
-
 ## Introduction
 
 According to the Fundamental Theorem of Calculus, if a function f is continuous on the closed interval [a, b] and F is an antiderivative of f on the interval [a, b], then
@@ -94,5 +93,14 @@ Below is an image of the GUI design of the software system. The logo on the left
 </ol>
 
 <img src="https://user-images.githubusercontent.com/54899441/102686122-828a8680-41b3-11eb-9922-03a5bf587029.png" width="640"></img>
+
+[Back to Top](#numerical-integration-calculator)
+
+## Example
+
+In this example, the data is representative of the function f(x)=x<sup>2</sup> on the interval [1,5]. There are 32 sub-intervals and the width of each one is 4/32 = 0.125. The area calculated is 41.33333, which is actually the exact answer.
+
+<img src="https://user-images.githubusercontent.com/54899441/102689402-ca1d0c80-41cb-11eb-972e-04970fb72f85.png">
+<img src="https://user-images.githubusercontent.com/54899441/102689401-c9847600-41cb-11eb-9e93-adcf304817f1.png">
 
 [Back to Top](#numerical-integration-calculator)
