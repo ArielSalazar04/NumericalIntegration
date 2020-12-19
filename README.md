@@ -3,7 +3,7 @@
 ## Table of Contents
 [1. Introduction](#introduction)
 
-[2. Theory](#theory)<br/>
+[2. Theorems](#theorems)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[a. Trapezoidal Rule](#1-trapezoidal-rule)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[b. Simpson's Rule](#2-simpsons-rule)
 
@@ -27,7 +27,7 @@ This open-source project is a software system created in Java that uses the Java
 
 [Back to Top](#numerical-integration-calculator)
 
-## Theory
+## Theorem
 
 In numerical computation, two of the most popular methods for approximating the definite integral on the interval [a, b] are the Trapezoidal Rule and Simpson's Rule, both of which use the following parameters: 
 
