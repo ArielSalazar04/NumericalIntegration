@@ -1,5 +1,18 @@
 # Numerical Integration Calculator
 
+## Table of Contents
+[1. Introduction](#introduction)
+
+[2. Theory](#theory)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[a. Trapezoidal Rule](#1-trapezoidal-rule)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[b. Simpson's Rule](#2-simpsons-rule)
+
+[3. Software System](#software-system)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[a. Graphical User Interface Design](#graphical-user-interface-design)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[b. Input Panel](#input-panel)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[c. Data Panel](#data-panel)
+
+
 ## Introduction
 
 According to the Fundamental Theorem of Calculus, if a function f is continuous on the closed interval [a, b] and F is an antiderivative of f on the interval [a, b], then
