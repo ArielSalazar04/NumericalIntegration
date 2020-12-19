@@ -12,6 +12,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[b. Input Panel](#input-panel)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[c. Data Panel](#data-panel)
 
+[4. Example](#example)
+
 ## Introduction
 
 According to the Fundamental Theorem of Calculus, if a function f is continuous on the closed interval [a, b] and F is an antiderivative of f on the interval [a, b], then
