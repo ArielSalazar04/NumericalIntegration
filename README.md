@@ -39,3 +39,33 @@ Simpson's Rule consists of approximating the area under a curve by integrating a
 
 **Software System**
 
+*Graphical User Interface Design*
+
+Below is an image of the GUI design of the software system. The logo on the left side is one that we 3-D modeled using Maple 2020. To the right of the logo is the Input Panel, where the user will enter h and n values and select methods for integrating and importing data. The objects on the right pertain to the Data Panel; in the Data Panel, the user can import data into the table or upload a file with a .csv or .txt extension.
+
+<img src="https://user-images.githubusercontent.com/54899441/102685584-de531080-41af-11eb-981a-37e5550de129.png"></img>
+
+*Input Panel*
+
+<ol>
+    <li><span style="font-weight: bold;">Import Option: </span>The user can enter data on the table or upload a .csv or .txt file.</li>
+    <li><span style="font-weight: bold;">H-value: </span>A positive integer, decimal, or fraction (e.g., 9, pi/4, 2pi).</li>
+    <li><span style="font-weight: bold;">N-value: </span>A positive integer that must be even if, and only if, Simpson’s Rule is chosen.</li>
+    <li><span style="font-weight: bold;">Integration Option: </span>A dropdown menu for choosing either the Trapezoidal Rule or Simpson’s Rule.</li>
+    <li><span style="font-weight: bold;">Area Button & Field: </span>The button will find the area and the area will be displayed in the field.</li>
+    <li><span style="font-weight: bold;">Graph Button: </span>The button will find the area and the area will be displayed in the field.</li>
+</ol>
+
+<img src="https://user-images.githubusercontent.com/54899441/102686123-83231d00-41b3-11eb-99af-f28092324fa3.png" width="640"></img>
+
+*Data Panel*
+
+<ol>
+    <li><span style="font-weight: bold;">Add: </span>Adds a row to the end of the table. If a row is selected, then a row will be added immediately under that row.</li>
+    <li><span style="font-weight: bold;">Delete: </span>Deletes the last row. If a row is selected, then that row is will be deleted.</li>
+    <li><span style="font-weight: bold;">Push Down: </span>Pushes all the rows down once. </li>
+    <li><span style="font-weight: bold;">Clear: </span>Clears all the data entered.</li>
+    <li><span style="font-weight: bold;">Browse File: </span>This button will open the user’s file explorer and ask for a file to be selected.</li>
+</ol>
+
+<img src="https://user-images.githubusercontent.com/54899441/102686122-828a8680-41b3-11eb-9922-03a5bf587029.png" width="640"></img>
