@@ -1,6 +1,6 @@
 # Numerical Integration Calculator
 
-**Introduction**
+## Introduction
 
 According to the Fundamental Theorem of Calculus, if a function f is continuous on the closed interval [a, b] and F is an antiderivative of f on the interval [a, b], then
 
@@ -11,7 +11,7 @@ Trapezoidal Rule and Simpson’s Rule.
 
 This open-source project is a software system created in Java that uses the Java Swing graphical user interface. 
 
-**Theory**
+## Theory
 
 In numerical computation, two of the most popular methods for approximating the definite integral on the interval [a, b] are the Trapezoidal Rule and Simpson's Rule, both of which use the following parameters: 
 
@@ -23,29 +23,29 @@ In numerical computation, two of the most popular methods for approximating the 
   <li>n = the number of sub-intervals</li>
 </ul>
 
-*(1) Trapezoidal Rule*
+##### (1) Trapezoidal Rule
 
 The Trapezoidal Rule consists of approximating the area under a curve using a trapezoid. Although using one trapezoid will yield a large error (especially for non-linear data), the Trapezoidal Rule can be applied multiple times to obtain a more accurate result. In fact, using more trapezoids and reducing the width of each one will produce a better approximation. When increasing the number of sub-intervals, n, each sub-interval width, h, will become smaller. 
 
 <img src="https://user-images.githubusercontent.com/54899441/102685601-ee6af000-41af-11eb-9237-004921d45376.png" width="512">
 <img src="https://user-images.githubusercontent.com/54899441/102685594-e743e200-41af-11eb-9e51-9a05875f3486.png" width="512">
 
-*(2) Simpson's Rule*
+##### (2) Simpson's Rule
 
 Simpson's Rule consists of approximating the area under a curve by integrating a Quadratic Lagrange Polynomial. While computing the integral in this manner may become computationally costly, the formula below will produce the same result (Simpson's Rule typically gives an exact solution for quadratic and cubic functions). 
 
 <img src="https://user-images.githubusercontent.com/54899441/102685599-ea3ed280-41af-11eb-9a9c-5589c331a6b0.png" width="512">
 <img src="https://user-images.githubusercontent.com/54899441/102685586-e0b56a80-41af-11eb-911e-ac0208a46185.png" width="512">
 
-**Software System**
+## Software System
 
-*Graphical User Interface Design*
+##### Graphical User Interface Design
 
 Below is an image of the GUI design of the software system. The logo on the left side is one that we 3-D modeled using Maple 2020. To the right of the logo is the Input Panel, where the user will enter h and n values and select methods for integrating and importing data. The objects on the right pertain to the Data Panel; in the Data Panel, the user can import data into the table or upload a file with a .csv or .txt extension.
 
 <img src="https://user-images.githubusercontent.com/54899441/102685584-de531080-41af-11eb-981a-37e5550de129.png"></img>
 
-*Input Panel*
+##### Input Panel
 
 <ol>
     <li><span style="font-weight: bold;">Import Option: </span>The user can enter data on the table or upload a .csv or .txt file.</li>
@@ -56,9 +56,9 @@ Below is an image of the GUI design of the software system. The logo on the left
     <li><span style="font-weight: bold;">Graph Button: </span>The button will find the area and the area will be displayed in the field.</li>
 </ol>
 
-<img src="https://user-images.githubusercontent.com/54899441/102686123-83231d00-41b3-11eb-99af-f28092324fa3.png" width="640"></img>
+<img src="https://user-images.githubusercontent.com/54899441/102686123-83231d00-41b3-11eb-99af-f28092324fa3.png" width="625"></img>
 
-*Data Panel*
+##### Data Panel
 
 <ol>
     <li><span style="font-weight: bold;">Add: </span>Adds a row to the end of the table. If a row is selected, then a row will be added immediately under that row.</li>
